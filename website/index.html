@@ -4,19 +4,61 @@
   <meta charset="utf-8" />
   <title>My Travel Log - Web2</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <main>
-    <h1>My Travel Log (Web2)</h1>
-    <div class="form">
-      <input id="country" placeholder="Country visited" />
-      <input id="city" placeholder="City visited" />
-      <button id="addBtn">Add</button>
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-globe-americas"></i> My Travel Log</h1>
+      <p class="subtitle">Track your travel memories</p>
+    </header>
+
+    <div class="card">
+      <div class="form">
+        <div class="form-group">
+          <label for="country">Country</label>
+          <input type="text" id="country" placeholder="e.g., France" required>
+        </div>
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" id="city" placeholder="e.g., Paris" required>
+        </div>
+        <div class="form-actions">
+          <button id="addBtn" class="btn-primary">
+            <span class="btn-text">Add Visit</span>
+            <span class="btn-loader" style="display: none;">
+              <i class="fas fa-spinner fa-spin"></i>
+            </span>
+          </button>
+        </div>
+      </div>
     </div>
-    <h2>Your Visits</h2>
-    <ul id="travelList"></ul>
-  </main>
+
+    <div class="card">
+      <div class="card-header">
+        <h2><i class="fas fa-list"></i> Your Visits</h2>
+        <div class="actions">
+          <button id="clearBtn" class="btn-secondary" disabled>
+            <i class="fas fa-trash"></i> Clear All
+          </button>
+        </div>
+      </div>
+      
+      <div id="loadingState" class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i> Loading your travel history...
+      </div>
+      
+      <div id="emptyState" class="empty-state" style="display: none;">
+        <i class="fas fa-plane"></i>
+        <p>No travel entries yet. Add your first destination!</p>
+      </div>
+      
+      <ul id="travelList" class="travel-list"></ul>
+    </div>
+
+    <div id="notification" class="notification"></div>
+  </div>
 
   <script src="app.js"></script>
 </body>

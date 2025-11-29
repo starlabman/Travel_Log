@@ -1,25 +1,120 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <title>My Travel Log - DApp</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <main>
-    <h1>My Travel Log (DApp)</h1>
-    <div class="form">
-      <input id="country" placeholder="Country visited" />
-      <input id="city" placeholder="City visited" />
-      <input id="date" type="date" />
-      <button id="connectBtn">Connect Wallet</button>
-      <button id="addBtn" disabled>Add (on-chain)</button>
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-globe-americas"></i> My Travel Log DApp</h1>
+      <p class="subtitle">Powered by Blockchain</p>
+      <div id="walletStatus" class="wallet-status">
+        <span class="status-dot"></span>
+        <span id="walletAddress">Not Connected</span>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="form">
+        <div class="form-group">
+          <label for="country">Country</label>
+          <input type="text" id="country" placeholder="e.g., France" required>
+        </div>
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" id="city" placeholder="e.g., Paris" required>
+        </div>
+        <div class="form-group">
+          <label for="date">Date Visited</label>
+          <input type="date" id="date" required>
+        </div>
+        <div class="form-actions">
+          <button id="connectBtn" class="btn-primary">
+            <i class="fas fa-wallet"></i>
+            <span class="btn-text">Connect Wallet</span>
+          </button>
+          <button id="addBtn" class="btn-primary" disabled>
+            <span class="btn-text">Add to Blockchain</span>
+            <span class="btn-loader" style="display: none;">
+              <i class="fas fa-spinner fa-spin"></i>
+            </span>
+          </button>
+        </div>
+      </div>
     </div>
-    <h2>Your On-chain Visits</h2>
-    <ul id="travelList"></ul>
-    <p id="status"></p>
-  </main>
+
+    <div class="card">
+      <div class="card-header">
+        <h2><i class="fas fa-list"></i> Your On-chain Visits</h2>
+        <div class="network-info">
+          <span id="networkName" class="network-badge">Not Connected</span>
+          <span id="blockNumber" class="block-number">#--</span>
+        </div>
+      </div>
+      
+      <div id="loadingState" class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i> Loading your on-chain travel history...
+      </div>
+      
+      <div id="emptyState" class="empty-state" style="display: none;">
+        <i class="fas fa-database"></i>
+        <p>No on-chain travel entries found. Connect your wallet and add your first destination!</p>
+      </div>
+      
+      <ul id="travelList" class="travel-list"></ul>
+      
+      <div class="card-footer">
+        <div class="gas-estimate" id="gasEstimate">
+          <i class="fas fa-gas-pump"></i>
+          <span>Estimated gas: <span id="gasAmount">--</span> GWEI</span>
+        </div>
+        <button id="refreshBtn" class="btn-secondary" title="Refresh data">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+    
+    <!-- Transaction Modal -->
+    <div id="txModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Transaction in Progress</h3>
+          <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+          <div class="tx-status">
+            <div class="tx-step" id="txApproval">
+              <div class="step-icon"><i class="fas fa-check-circle"></i></div>
+              <div class="step-text">Approve Transaction</div>
+            </div>
+            <div class="tx-step" id="txMining">
+              <div class="step-icon"><i class="fas fa-cog fa-spin"></i></div>
+              <div class="step-text">Mining Transaction</div>
+            </div>
+            <div class="tx-step" id="txConfirmed">
+              <div class="step-icon"><i class="far fa-circle"></i></div>
+              <div class="step-text">Transaction Confirmed</div>
+            </div>
+          </div>
+          <div class="tx-details">
+            <div class="tx-hash">
+              <span>TX Hash:</span>
+              <a id="txHashLink" href="#" target="_blank" rel="noopener noreferrer">View on Explorer</a>
+            </div>
+            <div class="tx-loading-bar">
+              <div class="loading-progress"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/ethers@6.9.0/dist/ethers.umd.min.js"></script>
   <script src="dapp.js"></script>
