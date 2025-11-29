@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>My Travel Log - DApp</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <main>
+    <h1>My Travel Log (DApp)</h1>
+    <div class="form">
+      <input id="country" placeholder="Country visited" />
+      <input id="city" placeholder="City visited" />
+      <input id="date" type="date" />
+      <button id="connectBtn">Connect Wallet</button>
+      <button id="addBtn" disabled>Add (on-chain)</button>
+    </div>
+    <h2>Your On-chain Visits</h2>
+    <ul id="travelList"></ul>
+    <p id="status"></p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.9.0/dist/ethers.umd.min.js"></script>
+  <script src="dapp.js"></script>
+</body>
+</html>

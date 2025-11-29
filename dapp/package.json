@@ -1,0 +1,11 @@
+{
+  "name": "travel-log-dapp",
+  "version": "1.0.0",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "deploy": "npx hardhat run scripts/deploy.js --network sepolia"
+  },
+  "devDependencies": {
+    "hardhat": "^2.16.0"
+  }
+}
