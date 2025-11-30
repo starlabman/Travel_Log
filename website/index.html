@@ -15,24 +15,24 @@
     </header>
 
     <div class="card">
-      <div class="form">
+      <form id="travelForm" class="form">
         <div class="form-group">
           <label for="country">Country</label>
-          <input type="text" id="country" placeholder="e.g., France" required>
+          <input type="text" id="country" name="country" placeholder="e.g., France" required>
         </div>
         <div class="form-group">
           <label for="city">City</label>
-          <input type="text" id="city" placeholder="e.g., Paris" required>
+          <input type="text" id="city" name="city" placeholder="e.g., Paris" required>
         </div>
         <div class="form-actions">
-          <button id="addBtn" class="btn-primary">
+          <button type="submit" id="addBtn" class="btn-primary">
             <span class="btn-text">Add Visit</span>
             <span class="btn-loader" style="display: none;">
               <i class="fas fa-spinner fa-spin"></i>
             </span>
           </button>
         </div>
-      </div>
+      </form>
     </div>
 
     <div class="card">

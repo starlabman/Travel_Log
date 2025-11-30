@@ -3,7 +3,7 @@ let travels = [];
 
 // DOM Elements
 const elements = {
-  form: document.querySelector('.form'),
+  form: document.getElementById('travelForm'),
   countryInput: document.getElementById('country'),
   cityInput: document.getElementById('city'),
   addBtn: document.getElementById('addBtn'),
@@ -18,6 +18,20 @@ const elements = {
 function init() {
   loadTravels();
   setupEventListeners();
+  
+  // Set initial button state
+  updateAddButtonState();
+  
+  // Add input event listeners for form validation
+  elements.countryInput.addEventListener('input', updateAddButtonState);
+  elements.cityInput.addEventListener('input', updateAddButtonState);
+}
+
+// Update add button state based on form validity
+function updateAddButtonState() {
+  const isFormValid = elements.countryInput.value.trim() !== '' && 
+                     elements.cityInput.value.trim() !== '';
+  elements.addBtn.disabled = !isFormValid;
 }
 
 // Load travels from localStorage or use sample data
@@ -163,40 +177,63 @@ function editTravel(id) {
   const originalText = btnText.textContent;
   
   btnText.textContent = 'Update';
-  addBtn.onclick = async function updateTravelHandler(e) {
-    e.preventDefault();
-    
-    const country = elements.countryInput.value.trim();
-    const city = elements.cityInput.value.trim();
-    
-    if (!country || !city) {
-      showError('Please enter both country and city');
-      return;
-    }
-    
+  addBtn.dataset.editing = 'true';
+  addBtn.dataset.editingId = id;
+}
+
+// Update a travel entry
+function updateTravel(e) {
+  e.preventDefault();
+  
+  const country = elements.countryInput.value.trim();
+  const city = elements.cityInput.value.trim();
+  
+  if (!country || !city) {
+    showError('Please enter both country and city');
+    return;
+  }
+  
+  // Simulate API call delay
+  showLoading(true);
+  
+  // Wrap the timeout in a Promise to handle async/await properly
+  new Promise((resolve, reject) => {
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      // Update travel
-      const index = travels.findIndex(t => t.id === id);
-      if (index !== -1) {
-        travels[index] = { ...travels[index], country, city };
-        saveTravels();
-        renderList();
-        elements.form.reset();
-        showNotification('Travel entry updated successfully!');
-      }
-      
-      // Reset form and button
-      addBtn.onclick = addTravel;
-      btnText.textContent = originalText;
-      
+      setTimeout(() => {
+        try {
+          // Update travel
+          const index = travels.findIndex(t => t.id === elements.addBtn.dataset.editingId);
+          if (index !== -1) {
+            travels[index] = { ...travels[index], country, city };
+            saveTravels();
+            renderList();
+            elements.form.reset();
+            showNotification('Travel entry updated successfully!');
+            resolve();
+          }
+        } catch (error) {
+          reject(error);
+        }
+      }, 800);
     } catch (error) {
-      console.error('Error updating travel:', error);
-      showError('Failed to update travel entry');
+      reject(error);
     }
-  };
+  })
+  .then(() => {
+    // Reset form and button on success
+    const addBtn = elements.addBtn;
+    const btnText = addBtn.querySelector('.btn-text');
+    btnText.textContent = 'Add Visit';
+    addBtn.dataset.editing = 'false';
+    delete addBtn.dataset.editingId;
+  })
+  .catch((error) => {
+    console.error('Error updating travel:', error);
+    showError('Failed to update travel entry');
+  })
+  .finally(() => {
+    showLoading(false);
+  });
 }
 
 // Delete a travel entry
@@ -256,19 +293,26 @@ function escapeHtml(unsafe) {
     .replace(/'/g, '&#039;');
 }
 
+// Handle form submission
+function handleFormSubmit(e) {
+  e.preventDefault();
+  
+  // Check if we're in edit mode
+  if (elements.addBtn.dataset.editing === 'true') {
+    updateTravel(e);
+  } else {
+    addTravel(e);
+  }
+}
+
 // Set up event listeners
 function setupEventListeners() {
-  elements.form.addEventListener('submit', addTravel);
+  elements.form.addEventListener('submit', handleFormSubmit);
   elements.clearBtn.addEventListener('click', clearAllTravels);
   
-  // Enable/disable add button based on input
-  const inputs = [elements.countryInput, elements.cityInput];
-  inputs.forEach(input => {
-    input.addEventListener('input', () => {
-      const hasValue = inputs.every(i => i.value.trim() !== '');
-      elements.addBtn.disabled = !hasValue;
-    });
-  });
+  // Add input event listeners for form validation
+  elements.countryInput.addEventListener('input', updateAddButtonState);
+  elements.cityInput.addEventListener('input', updateAddButtonState);
 }
 
 // Initialize the app when DOM is loaded
